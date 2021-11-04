@@ -8,13 +8,13 @@ import {BrowserRouter as Router} from 'react-router-dom'
 import {GlobalContexts} from "./store/Context"
 
 ReactDOM.render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <Router>
       <GlobalContexts>
         <App />
       </GlobalContexts>  
-    </Router>,
-  // </React.StrictMode>,
+    </Router>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
