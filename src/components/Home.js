@@ -3,11 +3,10 @@ import { useGlobalContext } from '../store/Context';
 
 const Home =(props) =>{
   const globalContext = useGlobalContext()
-  return (
-    <>
-      {globalContext}
-    </>
-  )
+  return (<>
+      In Home
+      {/* {globalContext} */}
+  </>)
 }
 
 export default Home;

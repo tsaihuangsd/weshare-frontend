@@ -10,12 +10,15 @@ import App from './App';
 
 import {BrowserRouter as Router} from 'react-router-dom'
 import {GlobalContexts} from "./store/Context"
+import Auth0ProviderContext from "./auth/Auth0";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <GlobalContexts>
-        <App />
+        <Auth0ProviderContext>
+          <App />
+        </Auth0ProviderContext>
       </GlobalContexts>  
     </Router>
   </React.StrictMode>,

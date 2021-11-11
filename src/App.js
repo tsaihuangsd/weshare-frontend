@@ -1,6 +1,6 @@
 import './App.css';
 import { Route, Switch } from "react-router-dom"
-import {Home} from './components'
+import {Home, Groups, Callback} from './components'
 import NavBar from './components/NavBar'
 
 
@@ -10,6 +10,8 @@ const App = ()=> {
       <NavBar />
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route exact path="/groups" component={Groups} />
+        <Route exact path="/callback" component={Callback} />
       </Switch>   
     </div>
   );

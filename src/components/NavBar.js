@@ -2,78 +2,60 @@ import React, {useState} from 'react'
 import {useHistory,} from 'react-router-dom'
 import './styles/NavBar.css'
 import {
-  // makeStyles,
-  // Link,
+  Link,
   CssBaseline,
   AppBar,
   Box,
   Toolbar,
   IconButton,
   Typography,
-  Badge,
   MenuItem,
   Menu,
+  Button,
 } from "@mui/material";
+import { styled } from '@mui/system';
 import MenuIcon from '@mui/icons-material/Menu';
-// import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-// import MailIcon from '@mui/icons-material/Mail';
-// import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
-// const useStyles = makeStyles((theme) => ({
-//   navlinks: {
-//     marginLeft: theme.spacing(10),
-//     display: "flex",
-//   },
-//   logo: {
-//     // marginLeft: "0px",
-//     color: "white",
-//     flexGrow: "1",
-//     cursor: "pointer",
-//   },
-//   link: {
-//     textDecoration: "none",
-//     color: "white",
-//     fontSize: "20px",
-//     marginLeft: theme.spacing(20),
-//     "&:hover": {
-//       color: "yellow",
-//       cursor: "pointer",
-//       // borderBottom: "1px solid white",
-//     },
-//   },
-// }));
+import { useAuth0 } from "@auth0/auth0-react";   
+
+const Logo = styled('div')(({ theme }) => ({
+  fontSize: "30px",
+  sx:"{{ display: { xs: 'none', sm: 'block' } }}",
+  color: "white",
+  cursor: "pointer",
+}))
 
 export default function NavBar(props) {
-  // const pathname = window.location.href
-  // const classes = useStyles()
-  const frontendURL = process.env.REACT_APP_FRONTEND_URL
-
-  const [anchorEl, setAnchorEl] = useState(false);
-  const [mobileAnchorEl, setMobileAnchorEl] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
+  const [mobileUserMenu, setMobileUserMenu] = useState(false);
   
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const history = useHistory()
+  const frontendURL = process.env.REACT_APP_FRONTEND_URL
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  
+  const toggleUserMenu = (event) => {
+    setUserMenu(!userMenu);
+  };
+  
+  const toggleMobileUserMenu = (event) => {
+    setMobileUserMenu(!mobileUserMenu);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileAnchorEl(false);
+  const signOut = async () => { // logs out the current user and redirects to the homepage
+      await logout({returnTo: frontendURL})
+      toggleUserMenu()
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(false);
-    handleMobileMenuClose();
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileAnchorEl(event.currentTarget);
-  };
+  const signUp = async () => {
+    await loginWithRedirect({screen_hint: 'signup', redirect_uri:`${frontendURL}/callback`})
+  }
 
   const menuId = 'primary-search-account-menu';
   const renderUserMenu = (
     <Menu
-      anchorEl={anchorEl}
+      anchorEl={userMenu}
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'right',
@@ -84,17 +66,17 @@ export default function NavBar(props) {
         vertical: 'top',
         horizontal: 'right',
       }}
-      open={anchorEl}
-      onClose={handleMenuClose} >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      open={userMenu}
+      onClose={toggleUserMenu} >
+      <MenuItem onClick={()=>{toggleUserMenu()}}>Profile</MenuItem>
+      <MenuItem onClick={()=>{signOut()}}>Sign Out</MenuItem>
     </Menu>
   );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileUserMenu = (
     <Menu
-      anchorEl={mobileAnchorEl}
+      anchorEl={mobileUserMenu}
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'right',
@@ -105,9 +87,9 @@ export default function NavBar(props) {
         vertical: 'top',
         horizontal: 'right',
       }}
-      open={mobileAnchorEl}
-      onClose={handleMobileMenuClose} >
-      <MenuItem onClick={handleProfileMenuOpen}>
+      open={mobileUserMenu}
+      onClose={toggleMobileUserMenu} >
+      <MenuItem onClick={toggleMobileUserMenu}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -134,25 +116,37 @@ export default function NavBar(props) {
             sx={{ mr: 2 }} >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }} >
+          <Logo onClick={()=>{history.push("/")}}>
             WeShare
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
+          </Logo>
+          <Box sx={{  display: "flex", 
+                            justifyContent: 'flex-start', 
+                            flexGrow: 1 }}>
+            { isAuthenticated
+            && (<Link fontSize="20px"
+                        href="/groups" 
+                        color= "white" 
+                        underline="hover"
+                        padding="25px">
+                    Groups
+                  </Link>)}
+                </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit" >
-              <AccountCircle />
-            </IconButton>
+            { isAuthenticated
+            ? (<IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={toggleUserMenu}
+                color="inherit" >
+                <AccountCircle />
+              </IconButton>)
+            : (<Button  variant="contained" 
+                        onClick={() => { signUp() }}>
+                Sign Up/Login</Button>)
+            }
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -160,7 +154,7 @@ export default function NavBar(props) {
               aria-label="show more"
               aria-controls={mobileMenuId}
               aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
+              onClick={toggleMobileUserMenu}
               color="inherit">
               <MoreIcon />
             </IconButton>
