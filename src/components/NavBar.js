@@ -1,17 +1,19 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useHistory,} from 'react-router-dom'
 import './styles/NavBar.css'
 import {
-  Link,
-  CssBaseline,
   AppBar,
+  // Backdrop,
   Box,
-  Toolbar,
-  IconButton,
-  Typography,
-  MenuItem,
-  Menu,
   Button,
+  CssBaseline,
+  IconButton,
+  Link,
+  Menu,
+  MenuItem,
+  // Modal,
+  Toolbar,
+  Typography,
 } from "@mui/material";
 import { styled } from '@mui/system';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -28,8 +30,15 @@ const Logo = styled('div')(({ theme }) => ({
 }))
 
 export default function NavBar(props) {
+  // const [isMobile, setIsMobile] = useState(window.matchMedia("only screen and (max-width: 900px)").matches)
   const [userMenu, setUserMenu] = useState(false);
   const [mobileUserMenu, setMobileUserMenu] = useState(false);
+  // const [userProfileModal, setUserProfileModal] = useState(false)
+  // const [mobileUserProfileModal, setMobileUserProfileModal] = useState(false)
+
+  // useEffect(() => {
+  //   console.log("useEffect re-render")
+  // },[mobileUserMenu]);
   
   const history = useHistory()
   const frontendURL = process.env.REACT_APP_FRONTEND_URL
@@ -105,7 +114,8 @@ export default function NavBar(props) {
 
   return (<>
     <CssBaseline />
-    <Box sx={{ flexGrow: 1 }}>      
+    <Box sx={{ flexGrow: 1 }}>    
+      {/* {console.log("isMobile: ", isMobile)}   */}
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -120,17 +130,17 @@ export default function NavBar(props) {
             WeShare
           </Logo>
           <Box sx={{  display: "flex", 
-                            justifyContent: 'flex-start', 
-                            flexGrow: 1 }}>
-            { isAuthenticated
-            && (<Link fontSize="20px"
+                      justifyContent: 'flex-start', 
+                      flexGrow: 1 }}>
+            { isAuthenticated && 
+              ( <Link fontSize="20px"
                         href="/groups" 
                         color= "white" 
                         underline="hover"
                         padding="25px">
                     Groups
-                  </Link>)}
-                </Box>
+                </Link>)}
+          </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             { isAuthenticated
             ? (<IconButton

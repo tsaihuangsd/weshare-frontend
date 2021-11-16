@@ -2,6 +2,7 @@ import './App.css';
 import { Route, Switch } from "react-router-dom"
 import {Home, Groups, Callback} from './components'
 import NavBar from './components/NavBar'
+import ProtectedRoute from "./auth/ProtectedRoute";
 
 
 const App = ()=> {
@@ -10,8 +11,8 @@ const App = ()=> {
       <NavBar />
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/groups" component={Groups} />
-        <Route exact path="/callback" component={Callback} />
+        <ProtectedRoute exact path="/groups" component={Groups} />
+        <ProtectedRoute exact path="/callback" component={Callback} />
       </Switch>   
     </div>
   );
