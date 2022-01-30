@@ -1,19 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import {useState} from 'react'
 import {useHistory,} from 'react-router-dom'
 import './styles/NavBar.css'
-import {
-  AppBar,
-  // Backdrop,
-  Box,
-  Button,
-  CssBaseline,
-  IconButton,
-  Link,
-  Menu,
-  MenuItem,
-  // Modal,
-  Toolbar,
-  Typography,
+import { AppBar, Box, Button, CssBaseline, IconButton, Link, Menu, MenuItem, Toolbar, useMediaQuery,
 } from "@mui/material";
 import { styled } from '@mui/system';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -30,19 +18,15 @@ const Logo = styled('div')(({ theme }) => ({
 }))
 
 export default function NavBar(props) {
-  // const [isMobile, setIsMobile] = useState(window.matchMedia("only screen and (max-width: 900px)").matches)
   const [userMenu, setUserMenu] = useState(false);
   const [mobileUserMenu, setMobileUserMenu] = useState(false);
   // const [userProfileModal, setUserProfileModal] = useState(false)
   // const [mobileUserProfileModal, setMobileUserProfileModal] = useState(false)
-
-  // useEffect(() => {
-  //   console.log("useEffect re-render")
-  // },[mobileUserMenu]);
   
-  const history = useHistory()
-  const frontendURL = process.env.REACT_APP_FRONTEND_URL
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  const history = useHistory()
+  const isDesktop = useMediaQuery('(min-width:900px)')
+  const frontendURL = process.env.REACT_APP_FRONTEND_URL
   
   const toggleUserMenu = (event) => {
     setUserMenu(!userMenu);
@@ -77,7 +61,7 @@ export default function NavBar(props) {
       }}
       open={userMenu}
       onClose={toggleUserMenu} >
-      <MenuItem onClick={()=>{toggleUserMenu()}}>Profile</MenuItem>
+      <MenuItem onClick={()=>{history.push("/userprofile")}}>Profile</MenuItem>
       <MenuItem onClick={()=>{signOut()}}>Sign Out</MenuItem>
     </Menu>
   );
@@ -98,77 +82,78 @@ export default function NavBar(props) {
       }}
       open={mobileUserMenu}
       onClose={toggleMobileUserMenu} >
-      <MenuItem onClick={toggleMobileUserMenu}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit" >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      { isAuthenticated
+      ? (<> 
+          <MenuItem onClick={()=>{history.push("/groups")}}>Groups</MenuItem>
+          <MenuItem onClick={()=>{history.push("/userprofile")}}>Profile</MenuItem>
+          <MenuItem onClick={()=>{signOut()}}>Sign Out</MenuItem></>)
+      : ( <MenuItem onClick={() => { signUp() }}>Sign Up/Login
+          </MenuItem>)
+      }
     </Menu>
   );
 
   return (<>
     <CssBaseline />
     <Box sx={{ flexGrow: 1 }}>    
-      {/* {console.log("isMobile: ", isMobile)}   */}
       <AppBar position="static">
         <Toolbar>
-          <IconButton
+          {!isDesktop && (<IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }} >
             <MenuIcon />
-          </IconButton>
+          </IconButton>)}
           <Logo onClick={()=>{history.push("/")}}>
             WeShare
-          </Logo>
-          <Box sx={{  display: "flex", 
-                      justifyContent: 'flex-start', 
-                      flexGrow: 1 }}>
-            { isAuthenticated && 
-              ( <Link fontSize="20px"
-                        href="/groups" 
-                        color= "white" 
-                        underline="hover"
-                        padding="25px">
-                    Groups
-                </Link>)}
-          </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            { isAuthenticated
-            ? (<IconButton
+          </Logo>          
+          { isDesktop 
+          ? (<>
+              <Box sx={{  display: "flex", 
+                          justifyContent: 'flex-end', 
+                          flexGrow: 1 }}>
+                  { isAuthenticated && 
+                    ( <Link fontSize="20px"
+                              href="/groups" 
+                              color= "white" 
+                              underline="hover"
+                              padding="25px">
+                          Groups
+                      </Link>)}
+              </Box>
+              <Box>
+              { isAuthenticated
+              ? (<IconButton
+                  size="large"
+                  // edge="end"
+                  // aria-label="account of current user"
+                  // aria-controls={menuId}
+                  // aria-haspopup="true"
+                  onClick={toggleUserMenu}
+                  color="inherit" >
+                  <AccountCircle />
+                </IconButton>)
+              : (<Button  variant="contained" 
+                          onClick={() => { signUp() }}>
+                    Sign Up/Login</Button>)
+              }
+            </Box>
+            </>)
+          : (<Box sx={{  display: "flex", 
+                  justifyContent: 'flex-end', 
+                  flexGrow: 1 }}>
+              <IconButton
                 size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={toggleUserMenu}
-                color="inherit" >
-                <AccountCircle />
-              </IconButton>)
-            : (<Button  variant="contained" 
-                        onClick={() => { signUp() }}>
-                Sign Up/Login</Button>)
-            }
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={toggleMobileUserMenu}
-              color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </Box>
+                // aria-label="show more"
+                // aria-controls={mobileMenuId}
+                // aria-haspopup="true"
+                onClick={toggleMobileUserMenu}
+                color="inherit">
+                <MoreIcon />
+              </IconButton>
+            </Box>)}
         </Toolbar>
       </AppBar>
       {renderMobileUserMenu}

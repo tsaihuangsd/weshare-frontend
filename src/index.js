@@ -9,17 +9,17 @@ import App from './App';
 // import reportWebVitals from './reportWebVitals';
 
 import {BrowserRouter as Router} from 'react-router-dom'
-import {GlobalContexts} from "./store/Context"
+import {ContextProvider} from "./store/context.js"
 import Auth0ProviderContext from "./auth/Auth0";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <GlobalContexts>
+      <ContextProvider>
         <Auth0ProviderContext>
           <App />
         </Auth0ProviderContext>
-      </GlobalContexts>  
+      </ContextProvider>  
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

@@ -1,0 +1,11 @@
+export const ActionTypes = {
+  //USER
+  USER_PROFILE_CREATING: 'USER_PROFILE_CREATING',
+  USER_PROFILE_CREATED: 'USER_PROFILE_CREATED',
+  USER_PROFILE_RELOAD: 'USER_PROFILE_RELOAD',
+
+  ERROR: 'ERROR',
+
+}
+
+// export default ActionTypes

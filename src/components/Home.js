@@ -1,8 +1,8 @@
-import React from 'react'
-import { useGlobalContext } from '../store/Context';
+// import React from 'react'
+// import { useGlobalContext } from '../store/context.js';
 
 const Home =(props) =>{
-  const globalContext = useGlobalContext()
+  // const globalContext = useGlobalContext()
   return (<>
       In Home
       {/* {globalContext} */}
